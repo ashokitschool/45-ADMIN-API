@@ -3,6 +3,8 @@ package in.ashokit.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -46,9 +48,11 @@ public class ProductEntity {
     private Integer updatedBy;
 
     @Column(name = "date_created")
+    @CreationTimestamp
     private LocalDateTime dateCreated;
 
     @Column(name = "last_updated")
+    @UpdateTimestamp
     private LocalDateTime lastUpdated;
 
     @ManyToOne

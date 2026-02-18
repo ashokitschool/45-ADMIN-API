@@ -15,3 +15,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+app:
+  images:
+    upload-dir: E:\\classes\\35-JRTP\\product-images\\
