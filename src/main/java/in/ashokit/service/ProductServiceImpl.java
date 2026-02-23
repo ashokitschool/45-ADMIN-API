@@ -62,31 +62,60 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto updateProduct(Integer productId, ProductDto productDto, MultipartFile productImage) throws Exception {
 
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
 
-        return null;
+        String originalFilename = productImage.getOriginalFilename();
+        Path filePath = Paths.get(imagesUploadDir + originalFilename);
+
+        // Create the directory if it doesn't exist
+        if (!Files.exists(filePath)) {
+            try {
+                Files.createDirectories(filePath.getParent());
+
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to save product image", e);
+            }
+        }
+
+        // Save the file to the specified location
+        Files.copy(productImage.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        productEntity.setImageUrl(filePath.toString());
+        productEntity.setName(productDto.getName());
+        productEntity.setDescription(productDto.getDescription());
+        productEntity.setUnitsStock(productDto.getUnitsStock());
+        productEntity.setActive(productDto.isActive());
+        productEntity.setUnitPrice(productDto.getUnitPrice());
+
+        ProductEntity updatedEntity = productRepository.save(productEntity);
+        return ProductMapper.toDto(updatedEntity);
     }
 
     @Override
     public List<ProductDto> getAllProductsByCategoryId(Integer categoryId) {
-
-        return null;
+        return productRepository.findByCategoryCategoryId(categoryId).stream().map(ProductMapper::toDto).toList();
     }
 
     @Override
     public ProductDto getProductById(Integer productId) {
-
-        return null;
+        ProductEntity productEntity = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
+        return ProductMapper.toDto(productEntity);
     }
 
     @Override
     public List<ProductDto> getProductsByName(String productName) {
-
-        return null;
+        return productRepository.findByNameContainingIgnoreCase(productName).stream().map(ProductMapper::toDto).toList();
     }
 
     @Override
     public ProductDto deleteProduct(Integer productId) {
 
-        return null;
+        ProductEntity productEntity = productRepository.findById(prodcutId).orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
+
+        // soft delete - update the active status to false instead of deleting the record from the database
+        productEntity.setActive(false);
+        ProductEntity save = productRepository.save(productEntity);
+
+        return ProductMapper.toDto(save);
     }
 }

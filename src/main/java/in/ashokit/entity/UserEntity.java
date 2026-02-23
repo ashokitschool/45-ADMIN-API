@@ -25,6 +25,8 @@ public class UserEntity {
     private Long phno;
     private String pwdUpdated;
 
+    private String activeSw
+
     @CreationTimestamp
     private LocalDate createdDate;
 

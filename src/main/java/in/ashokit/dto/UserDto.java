@@ -16,4 +16,6 @@ public class UserDto {
     private LocalDate updatedDate;
     private String pwdUpdated;
     public String roleName;
+    private String activeSw
+
 }
